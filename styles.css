@@ -161,6 +161,20 @@ body {
 }
 .card-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
 
+.zoom-btn {
+  position: absolute; right: 3.2%; bottom: 5.5%;
+  width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(12, 24, 38, .07); color: #64748B;
+  cursor: pointer; opacity: 0; pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .3s ease, background .2s, color .2s;
+}
+.zoom-btn .ico { width: 15px; height: 15px; stroke-width: 1.9; }
+.slide.is-active .zoom-btn { opacity: 1; pointer-events: auto; }
+.zoom-btn:hover { background: rgba(12, 24, 38, .13); color: #0F1E2E; }
+.zoom-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 .slide.is-active .card-frame { transform: scale(1); opacity: 1; }
 
 /* specular sheen sweeping across the active card */
@@ -241,11 +255,15 @@ body {
 }
 .crow:hover { background: var(--surface-hi); }
 .crow > .ico { color: var(--accent-text); width: 18px; height: 18px; transition: color .5s ease; }
-.crow a {
+.crow a, .crow .txt {
   flex: 1 1 auto; min-width: 0; color: var(--text); text-decoration: none;
   font-size: 14.5px; letter-spacing: -.01em;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+.crow-wrap { align-items: flex-start; padding-top: 10px; padding-bottom: 10px; }
+.crow-wrap > .ico { margin-top: 3px; }
+.crow-wrap a { white-space: normal; overflow: visible; line-height: 1.45; font-size: 13.5px; }
+.crow-wrap .icon-btn { margin-top: -3px; }
 .icon-btn {
   flex: none; width: 34px; height: 34px; border-radius: 10px;
   display: grid; place-items: center;
@@ -337,6 +355,47 @@ body {
 .sheet-item .ico.trail { color: var(--dim); width: 17px; height: 17px; }
 .sheet-item.is-current { border-color: var(--accent-text); }
 
+/* --- 放大檢視 ------------------------------------------------------- */
+body.no-scroll { overflow: hidden; }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 70;
+  background: rgba(4, 10, 17, .93);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  opacity: 0; transition: opacity .26s ease;
+  cursor: zoom-out;
+}
+.lightbox.open { opacity: 1; }
+
+/* 絕對置中:transform 自己處理位移,不會因為溢出而被推歪 */
+.lb-img {
+  position: absolute; left: 50%; top: 50%;
+  max-width: 94vw; max-height: 78vh;
+  border-radius: 14px; background: #fff;
+  box-shadow: 0 30px 70px -24px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .12);
+  transform: translate(-50%, -50%) scale(.94);
+  transition: transform .3s cubic-bezier(.22, .8, .3, 1);
+}
+.lightbox.open .lb-img { transform: translate(-50%, -50%) scale(1); }
+
+.lb-close {
+  position: absolute; top: calc(14px + env(safe-area-inset-top)); right: 14px;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255, 255, 255, .1); color: var(--text);
+}
+.lb-close .ico { width: 20px; height: 20px; }
+
+/* 直立手機:把名片轉 90° 填滿畫面,字才看得清楚。轉成橫向就自動恢復 */
+@media (orientation: portrait) and (max-width: 760px) {
+  .lb-img {
+    width: min(86vh, 92vw * 1188 / 726);
+    height: auto;
+    max-width: none; max-height: none;
+    transform: translate(-50%, -50%) rotate(90deg) scale(.94);
+  }
+  .lightbox.open .lb-img { transform: translate(-50%, -50%) rotate(90deg) scale(1); }
+}
+
 /* --- toast ---------------------------------------------------------- */
 .toast {
   position: fixed; z-index: 60; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom));
@@ -401,7 +460,8 @@ body {
   .floaty { animation: none; }
   .slide.is-active .card-frame::after { animation: none; }
   .tilt { transition: none; transform: none !important; }
-  .card-frame, .info, .btn, .dot, .sheet, .toast, .sheet-scrim { transition-duration: .01ms !important; }
+  .card-frame, .info, .btn, .dot, .sheet, .toast, .sheet-scrim,
+  .lightbox, .lb-img { transition-duration: .01ms !important; }
 }
 
 @media (prefers-contrast: more) {

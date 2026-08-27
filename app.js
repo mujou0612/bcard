@@ -2,7 +2,7 @@
  * app.js — 名片 landing page 邏輯
  * 資料與文案都在 data.js,這裡只處理行為。
  * ------------------------------------------------------------------ */
-import { CARDS, I18N, FALLBACK_LANG, buildVCard } from './data.js';
+import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js';
 
 /* ---------- 語系 ---------- */
 
@@ -68,6 +68,9 @@ const scrim = $('scrim');
 const sheetTitle = $('sheetTitle');
 const sheetBody = $('sheetBody');
 const sheetClose = $('sheetClose');
+const lightbox = $('lightbox');
+const lbImg = $('lbImg');
+const lbClose = $('lbClose');
 const toastEl = $('toast');
 const langBtn = $('langBtn');
 const langBtnLabel = $('langBtnLabel');
@@ -105,6 +108,16 @@ function socialIcon(type) {
   return map[type] || 'i-link';
 }
 
+function cardAlt(card) {
+  return `${card.displayName} — ${pick(card, lang).company}`;
+}
+
+function downloadName(card) {
+  const ext = pick(card, lang).image.split('.').pop();
+  const id = card.id.charAt(0).toUpperCase() + card.id.slice(1);
+  return `MuJou-${id}-${lang}.${ext}`;
+}
+
 /** 用一個暫時的 <a> 觸發導覽/下載,避免被彈窗阻擋 */
 function clickAnchor(attrs) {
   const a = document.createElement('a');
@@ -123,19 +136,38 @@ function buildSlides() {
          aria-label="${i + 1} / ${CARDS.length}">
       <div class="persp"><div class="tilt"><div class="floaty">
         <figure class="card-frame">
-          <img src="${c.image}" alt="${c.imageAlt}"
+          <img src="${pick(c, lang).image}" alt="${cardAlt(c)}"
                ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+          <button class="zoom-btn" type="button" tabindex="-1"
+                  data-i18n-aria="zoomAria" aria-label="Enlarge">${icon('i-expand')}</button>
         </figure>
       </div></div></div>
     </div>`).join('');
   slides = [...cardsEl.querySelectorAll('.slide')];
 
   dotsEl.innerHTML = CARDS.map((c, i) =>
-    `<button class="dot" type="button" role="tab" data-i="${i}" aria-label="${c.company}"></button>`
+    `<button class="dot" type="button" role="tab" data-i="${i}"
+             aria-label="${pick(c, lang).company}"></button>`
   ).join('');
   dotsEl.querySelectorAll('.dot').forEach((d) =>
     d.addEventListener('click', () => goTo(+d.dataset.i))
   );
+}
+
+/** 語系改變時換掉名片圖 */
+function syncCardImages() {
+  slides.forEach((s, i) => {
+    const img = s.querySelector('img');
+    const src = pick(CARDS[i], lang).image;
+    if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+    img.alt = cardAlt(CARDS[i]);
+  });
+  dotsEl.querySelectorAll('.dot').forEach((d, i) =>
+    d.setAttribute('aria-label', pick(CARDS[i], lang).company)
+  );
+  slides.forEach((s, i) => {
+    s.querySelector('.zoom-btn').tabIndex = i === index ? 0 : -1;
+  });
 }
 
 function goTo(i) {
@@ -166,33 +198,47 @@ function applyTheme(card) {
 }
 
 function renderInfo(card) {
+  const L = pick(card, lang);
+
   nameEl.textContent = card.displayName;
   // 分隔點黏在職稱後面,換行時才不會出現孤立的「·」開頭
   roleEl.innerHTML =
-    `<span>${t.roles[card.roleKey] || ''}<span class="sep" aria-hidden="true">·</span></span> ` +
-    `<span class="org">${card.company}</span>`;
+    `<span>${L.role}<span class="sep" aria-hidden="true">·</span></span> ` +
+    `<span class="org">${L.company}</span>`;
 
   const rows = [
     { ico: 'i-mail', label: t.emailLabel, text: card.email, href: `mailto:${card.email}`, copy: card.email },
     { ico: 'i-phone', label: t.phoneLabel, text: card.phone, href: `tel:${card.phoneRaw}`, copy: card.phoneRaw },
     { ico: 'i-globe', label: t.webLabel, text: card.websiteLabel, href: card.website, copy: card.website, ext: true },
   ];
+  if (L.address) {
+    rows.push({
+      ico: 'i-pin', label: t.addressLabel, text: L.address, copy: L.address, wrap: true, ext: true,
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(L.address)}`,
+    });
+  }
+  if (card.vat) {
+    rows.push({ ico: 'i-id', label: t.vatLabel, text: `${t.vatLabel} ${card.vat}`, copy: card.vat });
+  }
 
-  contactsEl.innerHTML = rows.map((r) => `
-    <li class="crow">
-      ${icon(r.ico)}
-      <a href="${r.href}" ${r.ext ? 'target="_blank" rel="noopener"' : ''}
-         aria-label="${r.label}: ${r.text}">${r.text}</a>
+  contactsEl.innerHTML = rows.map((r) => {
+    const body = r.href
+      ? `<a href="${r.href}" ${r.ext ? 'target="_blank" rel="noopener"' : ''}
+            aria-label="${r.label}: ${r.text}">${r.text}</a>`
+      : `<span class="txt">${r.text}</span>`;
+    return `<li class="crow${r.wrap ? ' crow-wrap' : ''}">
+      ${icon(r.ico)}${body}
       <button class="icon-btn copy" type="button" data-copy="${r.copy}"
               aria-label="${t.copy} ${r.label}">${icon('i-copy')}</button>
-    </li>`).join('');
+    </li>`;
+  }).join('');
 
   contactsEl.querySelectorAll('.copy').forEach((b) => {
     b.addEventListener('click', () => copyText(b.dataset.copy, b));
   });
 
   // 動作按鈕
-  btnContact.setAttribute('href', card.vcf);
+  btnContact.setAttribute('href', vcfPath(card, lang));
   btnChat.setAttribute('href', card.chatUrl);
   btnSocial.hidden = !(card.social && card.social.length);
   footEl.textContent = IS_IOS ? t.iosHint : t.androidHint;
@@ -214,7 +260,10 @@ function setIndex(i, { animate = true } = {}) {
   clearTimeout(swapTimer);
   const card = CARDS[index];
   applyTheme(card);
-  slides.forEach((s, n) => s.classList.toggle('is-active', n === index));
+  slides.forEach((s, n) => {
+    s.classList.toggle('is-active', n === index);
+    s.querySelector('.zoom-btn').tabIndex = n === index ? 0 : -1;
+  });
   dotsEl.querySelectorAll('.dot').forEach((d, n) => d.classList.toggle('is-active', n === index));
 
   if (changed && animate && !REDUCED) {
@@ -272,28 +321,29 @@ function addToContact(e) {
   // 其他平台:用 Blob 觸發下載,不依賴伺服器的 Content-Type
   e.preventDefault();
   try {
-    const blob = new Blob([buildVCard(card)], { type: 'text/vcard;charset=utf-8' });
+    const blob = new Blob([buildVCard(card, lang)], { type: 'text/vcard;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    clickAnchor({ href: url, download: `MuJou-${card.id}.vcf` });
+    clickAnchor({ href: url, download: `MuJou-${card.id}-${lang}.vcf` });
     setTimeout(() => URL.revokeObjectURL(url), 5000);
     toast(t.savingContact);
   } catch (_) {
-    clickAnchor({ href: card.vcf, download: `MuJou-${card.id}.vcf` });
+    clickAnchor({ href: vcfPath(card, lang), download: `MuJou-${card.id}-${lang}.vcf` });
   }
 }
 
 async function downloadCard() {
   const card = CARDS[index];
+  const src = pick(card, lang).image;
   toast(t.downloadStarted);
   try {
-    const res = await fetch(card.image, { cache: 'force-cache' });
+    const res = await fetch(src, { cache: 'force-cache' });
     if (!res.ok) throw new Error(res.status);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
-    clickAnchor({ href: url, download: card.downloadName });
+    clickAnchor({ href: url, download: downloadName(card) });
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   } catch (_) {
-    clickAnchor({ href: card.image, download: card.downloadName, target: '_blank', rel: 'noopener' });
+    clickAnchor({ href: src, download: downloadName(card), target: '_blank', rel: 'noopener' });
   }
 }
 
@@ -310,6 +360,36 @@ function openSocial() {
     sub: s.url.replace(/^https?:\/\/(www\.)?/, ''),
     href: s.url,
   })));
+}
+
+/* ---------- 放大檢視 ---------- */
+
+let lbLastFocus = null;
+
+function openLightbox() {
+  const card = CARDS[index];
+  lbImg.src = pick(card, lang).image;
+  lbImg.alt = cardAlt(card);
+  lbLastFocus = document.activeElement;
+  lightbox.hidden = false;
+  void lightbox.offsetHeight;
+  lightbox.classList.add('open');
+  document.body.classList.add('no-scroll');
+  lbClose.focus({ preventScroll: true });
+  document.addEventListener('keydown', onLbKey);
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.classList.remove('no-scroll');
+  document.removeEventListener('keydown', onLbKey);
+  setTimeout(() => { lightbox.hidden = true; }, 260);
+  if (lbLastFocus && lbLastFocus.focus) lbLastFocus.focus({ preventScroll: true });
+}
+
+function onLbKey(e) {
+  if (e.key === 'Escape') { e.preventDefault(); closeLightbox(); }
+  if (e.key === 'Tab') { e.preventDefault(); lbClose.focus(); }
 }
 
 /* ---------- Bottom sheet ---------- */
@@ -368,7 +448,7 @@ function onSheetKey(e) {
 
 function openLangSheet() {
   langBtn.setAttribute('aria-expanded', 'true');
-  openSheet(t.language, Object.keys(I18N).map((code) => ({
+  openSheet(t.language, LANGS.map((code) => ({
     icon: 'i-lang',
     title: I18N[code].label,
     current: code === lang,
@@ -404,6 +484,7 @@ function applyLang() {
 
   langBtnLabel.textContent = LANG_SHORT[lang] || lang;
   langBtn.setAttribute('aria-label', t.language);
+  syncCardImages();
   renderInfo(CARDS[index]);
 }
 
@@ -432,14 +513,43 @@ function initTilt() {
   });
 }
 
+/* ---------- 點擊 / 滑動判定 ---------- */
+
+function initTaps() {
+  slides.forEach((slide, i) => {
+    let x0 = 0, y0 = 0, t0 = 0, sl0 = 0, dragged = false;
+
+    slide.addEventListener('pointerdown', (e) => {
+      x0 = e.clientX; y0 = e.clientY; t0 = e.timeStamp;
+      sl0 = cardsEl.scrollLeft; dragged = false;
+    });
+    slide.addEventListener('pointermove', (e) => {
+      if (Math.abs(e.clientX - x0) > 8 || Math.abs(e.clientY - y0) > 8) dragged = true;
+    });
+    slide.addEventListener('pointercancel', () => { dragged = true; });
+    slide.addEventListener('pointerup', (e) => {
+      const scrolled = Math.abs(cardsEl.scrollLeft - sl0) > 4;
+      if (dragged || scrolled || e.timeStamp - t0 > 700) return;
+      if (i !== index) goTo(i);
+      else openLightbox();
+    });
+
+    slide.querySelector('.zoom-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (i !== index) goTo(i); else openLightbox();
+    });
+  });
+}
+
 /* ---------- 啟動 ---------- */
 
 function init() {
   buildSlides();
   index = initialIndex();
-  applyLang();          // 內含 renderInfo
+  applyLang();          // 內含 syncCardImages + renderInfo
   setIndex(index, { animate: false });
   initTilt();
+  initTaps();
   if (index > 0) {
     // 先讓版面完成佈局再置中,避免圖片尚未載入時算錯位置
     requestAnimationFrame(() => {
@@ -463,8 +573,6 @@ function init() {
     if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
   });
 
-  slides.forEach((s, i) => s.addEventListener('click', () => { if (i !== index) goTo(i); }));
-
   prevBtn.addEventListener('click', () => goTo(index - 1));
   nextBtn.addEventListener('click', () => goTo(index + 1));
 
@@ -474,6 +582,8 @@ function init() {
   langBtn.addEventListener('click', openLangSheet);
   sheetClose.addEventListener('click', closeSheet);
   scrim.addEventListener('click', closeSheet);
+  lightbox.addEventListener('click', closeLightbox);
+  lbClose.addEventListener('click', closeLightbox);
 
   // 視窗尺寸改變時,把目前這張重新置中
   let rt;
