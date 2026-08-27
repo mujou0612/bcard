@@ -2,9 +2,13 @@
  * app.js — 名片 landing page 邏輯
  * 資料與文案都在 data.js,這裡只處理行為。
  * ------------------------------------------------------------------ */
-import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js?v=6';
+import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js?v=7';
 
 /* ---------- 語系 ---------- */
+
+/** 靜態資源版本:改圖之後加這個數字,瀏覽器才不會拿舊的快取 */
+const ASSET_V = '7';
+const withV = (p) => `${p}?v=${ASSET_V}`;
 
 const LANG_SHORT = { 'zh-Hant': '繁中', 'zh-Hans': '简中', en: 'EN', ja: '日本語', ko: '한국어' };
 const STORE_KEY = 'bcard.lang';
@@ -136,7 +140,7 @@ function buildSlides() {
          aria-label="${i + 1} / ${CARDS.length}">
       <div class="persp"><div class="tilt"><div class="floaty">
         <figure class="card-frame">
-          <img src="${pick(c, lang).image}" alt="${cardAlt(c)}"
+          <img src="${withV(pick(c, lang).image)}" alt="${cardAlt(c)}"
                ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
           <button class="zoom-btn" type="button" tabindex="-1"
                   data-i18n-aria="zoomAria" aria-label="Enlarge">${icon('i-expand')}</button>
@@ -158,7 +162,7 @@ function buildSlides() {
 function syncCardImages() {
   slides.forEach((s, i) => {
     const img = s.querySelector('img');
-    const src = pick(CARDS[i], lang).image;
+    const src = withV(pick(CARDS[i], lang).image);
     if (img.getAttribute('src') !== src) img.setAttribute('src', src);
     img.alt = cardAlt(CARDS[i]);
   });
@@ -322,7 +326,7 @@ function addToContact(e) {
 
 async function downloadCard() {
   const card = CARDS[index];
-  const src = pick(card, lang).image;
+  const src = withV(pick(card, lang).image);
   toast(t.downloadStarted);
   try {
     const res = await fetch(src, { cache: 'force-cache' });
@@ -357,7 +361,7 @@ let lbLastFocus = null;
 
 function openLightbox() {
   const card = CARDS[index];
-  lbImg.src = pick(card, lang).image;
+  lbImg.src = withV(pick(card, lang).image);
   lbImg.alt = cardAlt(card);
   lbLastFocus = document.activeElement;
   lightbox.hidden = false;

@@ -40,6 +40,12 @@ const NAME = {
   ko: 'Mu Jou 周書丞',
 };
 
+/** 公司中文名,只在中文版名片出現 */
+const CN_NAME = {
+  funtek:  { 'zh-Hant': '樂堤科技有限公司', 'zh-Hans': '乐堤科技有限公司' },
+  pinchat: { 'zh-Hant': '堤安移動股份有限公司', 'zh-Hans': '堤安移动股份有限公司' },
+};
+
 const ROLE_BD = {
   'zh-Hant': '商務副總',
   'zh-Hans': '商务副总',
@@ -57,6 +63,7 @@ function officeL10n(idPrefix, company) {
       name: NAME[lang],
       role: ROLE_BD[lang],
       company,
+      cnName: (CN_NAME[idPrefix] || {})[lang] || null,
       address: TAIPEI[lang],
       adr: lang === 'en' ? TAIPEI_ADR.en : TAIPEI_ADR.other(lang),
     };
@@ -75,7 +82,7 @@ export const CARDS = [
     id: 'funtek',
     accent: '#5694B5',
     accentText: '#8FC6E4',
-    brand: { logo: 'tools/logos/funtek.png', logoWidth: 262, dash: '#C6C6C6' },
+    brand: { logo: 'tools/logos/funtek.png', logoWidth: 262 },
     email: 'mujou@funtek.co',
     phone: '+886 917 209 841',
     phoneRaw: '+886917209841',
@@ -93,7 +100,7 @@ export const CARDS = [
     id: 'pinchat',
     accent: '#02B13F',
     accentText: '#35D46E',
-    brand: { logo: 'tools/logos/pinchat.png', logoWidth: 250, dash: '#02B13F' },
+    brand: { logo: 'tools/logos/pinchat.png', logoWidth: 250 },
     email: 'mujou@pinchatcorp.com',
     phone: '+886 917 209 841',
     phoneRaw: '+886917209841',
@@ -129,6 +136,7 @@ export const CARDS = [
         image: 'assets/futuremode-card.jpg',
         name: 'Mu Jou',
         role: 'Partnerships',
+        cnName: null,
         company: 'Futuremode · Taipei Blockchain Week',
         address: null,
         adr: null,

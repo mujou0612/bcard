@@ -35,20 +35,17 @@ function template(card, lang) {
     font-family:"Helvetica Neue","PingFang TC","Hiragino Sans","Apple SD Gothic Neo","Noto Sans TC",sans-serif;
     -webkit-font-smoothing:antialiased;
   }
-  .dash {
-    position:absolute; top:0; left:0; right:0; height:3px;
-    background:repeating-linear-gradient(to right, ${b.dash} 0 9px, transparent 9px 18px);
-  }
   .name  { position:absolute; left:74px; top:78px;  font-size:44px; font-weight:700; color:#000; letter-spacing:.2px; line-height:1; }
   .title { position:absolute; left:74px; top:142px; font-size:33px; font-weight:400; color:#808080; line-height:1; }
   .logo  { position:absolute; right:88px; top:78px; width:${b.logoWidth}px; }
+  .cn    { position:absolute; right:88px; top:146px; font-size:27px; color:#808080; letter-spacing:.06em; text-align:right; }
   .contact { position:absolute; left:75px; top:350px; font-size:32px; color:#808080; line-height:1.42; }
   .org     { position:absolute; left:75px; top:520px; font-size:33px; color:#808080; line-height:1.53; }
 </style></head><body>
-  <div class="dash"></div>
   <div class="name">${escHtml(L.name)}</div>
   <div class="title">${escHtml(L.role)}</div>
   <img class="logo" src="${dataUri(b.logo)}" alt="">
+  ${L.cnName ? `<div class="cn">${escHtml(L.cnName)}</div>` : ''}
   <div class="contact">${escHtml(card.email)}<br>${escHtml(card.website)}</div>
   <div class="org">${escHtml(L.company)}<br>${escHtml(L.address)}${vatLine}</div>
 </body></html>`;
