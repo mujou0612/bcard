@@ -2,7 +2,7 @@
  * app.js — 名片 landing page 邏輯
  * 資料與文案都在 data.js,這裡只處理行為。
  * ------------------------------------------------------------------ */
-import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js';
+import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js?v=4';
 
 /* ---------- 語系 ---------- */
 
