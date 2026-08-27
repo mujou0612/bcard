@@ -8,7 +8,7 @@
 
 - **多張名片左右滑動切換** — FUNTEK / PinChat / Futuremode(Taipei Blockchain Week),切換時下方資訊與主色同步變化
 - **名片跟著語系換** — FUNTEK 與 PinChat 各有繁中 / 简中 / English / 日本語 / 한국어 五個版本的名片圖;Futuremode 依需求維持英文
-- **點名片放大檢視** — 直立手機會自動把名片轉 90° 填滿畫面,轉成橫向就恢復正常方向
+- **點名片放大檢視** — 維持名片原本方向放大到滿版,可再用手勢縮放細看
 - **動態名片效果** — 光澤掃過、緩慢浮動,桌機滑鼠移入時 3D 傾斜
 - **i18n** — 依瀏覽器語系自動切換,右上角可手動切換(記憶於 localStorage)
 - **Add to Contact** — iOS 直接開啟該語系的 `.vcf` 跳出「加入聯絡人」;Android / 桌機以 Blob 下載 vCard 3.0(CRLF、UTF-8)

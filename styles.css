@@ -110,11 +110,6 @@ body {
 .stage { padding: 0; }
 .detail { padding: 0 var(--pad); }
 
-.hint {
-  margin: 0 0 14px; text-align: center;
-  font-size: 13px; color: var(--dim); letter-spacing: .01em;
-}
-
 /* --- carousel ------------------------------------------------------- */
 .rail { position: relative; }
 
@@ -308,11 +303,6 @@ body {
 .btn-row .btn .ico { width: 21px; height: 21px; color: var(--accent-text); transition: color .5s ease; }
 .btn[hidden] { display: none; }
 
-.foot {
-  margin: 22px 0 0; text-align: center;
-  font-size: 11.5px; color: var(--dim); opacity: .75; letter-spacing: .01em;
-}
-
 /* --- bottom sheet --------------------------------------------------- */
 .sheet-scrim {
   position: fixed; inset: 0; z-index: 40;
@@ -370,7 +360,7 @@ body.no-scroll { overflow: hidden; }
 /* 絕對置中:transform 自己處理位移,不會因為溢出而被推歪 */
 .lb-img {
   position: absolute; left: 50%; top: 50%;
-  max-width: 94vw; max-height: 78vh;
+  max-width: 96vw; max-height: 84vh;
   border-radius: 14px; background: #fff;
   box-shadow: 0 30px 70px -24px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .12);
   transform: translate(-50%, -50%) scale(.94);
@@ -384,17 +374,6 @@ body.no-scroll { overflow: hidden; }
   background: rgba(255, 255, 255, .1); color: var(--text);
 }
 .lb-close .ico { width: 20px; height: 20px; }
-
-/* 直立手機:把名片轉 90° 填滿畫面,字才看得清楚。轉成橫向就自動恢復 */
-@media (orientation: portrait) and (max-width: 760px) {
-  .lb-img {
-    width: min(86vh, 92vw * 1188 / 726);
-    height: auto;
-    max-width: none; max-height: none;
-    transform: translate(-50%, -50%) rotate(90deg) scale(.94);
-  }
-  .lightbox.open .lb-img { transform: translate(-50%, -50%) rotate(90deg) scale(1); }
-}
 
 /* --- toast ---------------------------------------------------------- */
 .toast {
@@ -435,13 +414,11 @@ body.no-scroll { overflow: hidden; }
     min-height: calc(100vh - 58px);
     min-height: calc(100dvh - 58px);
   }
-  .hint { text-align: center; }
   .detail { padding: 0; }
   .info { margin-top: 0; text-align: left; }
   .contacts { margin-top: 22px; }
   .name { font-size: 40px; }
   .role { font-size: 15.5px; }
-  .foot { text-align: left; }
   .sheet {
     left: auto; right: 32px; bottom: 32px; max-width: 380px;
     border-radius: 20px; border-bottom: 1px solid var(--line);

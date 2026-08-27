@@ -55,7 +55,6 @@ const infoEl = $('info');
 const nameEl = $('cName');
 const roleEl = $('cRole');
 const contactsEl = $('contacts');
-const footEl = $('foot');
 const btnContact = $('btnContact');
 const btnDownload = $('btnDownload');
 const btnChat = $('btnChat');
@@ -241,7 +240,6 @@ function renderInfo(card) {
   btnContact.setAttribute('href', vcfPath(card, lang));
   btnChat.setAttribute('href', card.chatUrl);
   btnSocial.hidden = !(card.social && card.social.length);
-  footEl.textContent = IS_IOS ? t.iosHint : t.androidHint;
 
   dotsEl.querySelectorAll('.dot').forEach((d, i) => {
     const on = i === index;
