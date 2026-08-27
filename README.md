@@ -29,7 +29,9 @@ vcf/                產生出來的 vCard 檔(每張名片 × 每語系)
 tools/
   build-cards.mjs   由 data.js 產生 assets/*-card-*.png
   build-vcf.mjs     由 data.js 產生 vcf/*.vcf
-  logos/            產名片圖用的 logo 素材
+  build-poster.mjs  產生直式掃描圖 assets/poster-*.png
+  verify-qr.py      驗證掃描圖上的 QR 逐格正確、留白足夠
+  logos/            產名片圖與掃描圖用的 logo 素材
 ```
 
 ## 常見修改
@@ -62,6 +64,20 @@ social: [
 
 ### 加一張新名片
 在 `CARDS` 加一個物件(`brand` 填 logo 路徑就能自動產圖,填 `null` 則使用你自己準備的圖),跑上面兩個 build 指令。輪播、圓點、主色都會自動跟著長出來。
+
+## 直式掃描圖(手機展示用)
+
+`assets/poster-funtek.png` 與 `assets/poster-pinchat.png` 是給對方掃的直式全螢幕圖,
+預設 1179×2556(iPhone 15/16 Pro 系列比例)。QR 分別指向 `?card=funtek` 與 `?card=pinchat`。
+
+```bash
+pip3 install --user segno          # 只需裝一次
+node tools/build-poster.mjs        # 產生兩張
+node tools/build-poster.mjs 1080 1920   # 換尺寸
+python3 tools/verify-qr.py         # 驗證 QR 逐格正確、quiet zone ≥ 4 模組
+```
+
+QR 使用錯誤修正等級 H(可容忍約 30% 損毀),模組用深一階的品牌色,對白底對比約 9:1,遠高於掃描所需的 3:1。
 
 ## 本機預覽
 
