@@ -111,8 +111,8 @@ export const CARDS = [
     social: [
       { type: 'linkedin', label: 'LinkedIn', url: 'https://linkedin.com/in/mujou0612' },
     ],
-    vcard: { first: 'Mu', last: 'Jou', org: 'PinChat;FUNTEK Software Inc.' },
-    l10n: officeL10n('pinchat', 'PinChat by FUNTEK Software Inc.'),
+    vcard: { first: 'Mu', last: 'Jou', org: 'PinChat Inc.' },
+    l10n: officeL10n('pinchat', 'PinChat Inc.'),
   },
   {
     id: 'futuremode',
