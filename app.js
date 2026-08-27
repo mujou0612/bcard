@@ -167,9 +167,9 @@ function applyTheme(card) {
 
 function renderInfo(card) {
   nameEl.textContent = card.displayName;
+  // 分隔點黏在職稱後面,換行時才不會出現孤立的「·」開頭
   roleEl.innerHTML =
-    `<span>${t.roles[card.roleKey] || ''}</span>` +
-    `<span class="sep" aria-hidden="true">·</span>` +
+    `<span>${t.roles[card.roleKey] || ''}<span class="sep" aria-hidden="true">·</span></span> ` +
     `<span class="org">${card.company}</span>`;
 
   const rows = [

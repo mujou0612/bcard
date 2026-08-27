@@ -225,10 +225,11 @@ body {
   letter-spacing: -.02em; line-height: 1.18; text-wrap: balance;
 }
 .role {
-  margin: 7px 0 0; font-size: 14.5px; font-weight: 500; text-wrap: balance;
+  margin: 7px 0 0; font-size: 13.5px; font-weight: 500;
   color: var(--accent-text); transition: color .5s ease;
 }
-.role .sep { opacity: .5; margin: 0 6px; }
+.role > span { white-space: nowrap; }   /* 只允許在職稱與公司之間換行 */
+.role .sep { opacity: .5; margin-left: 6px; }
 .role .org { color: var(--dim); }
 
 .contacts { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 8px; text-align: left; }
@@ -358,6 +359,7 @@ body {
   :root { --maxw: 520px; --slide-w: 80%; --pad: 24px; }
   .btn-row .btn { font-size: 13.5px; }
   .crow a { font-size: 15px; }
+  .role { font-size: 14.5px; }
 }
 
 @media (hover: hover) and (pointer: fine) {
