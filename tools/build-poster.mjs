@@ -115,7 +115,7 @@ function template(p) {
   <div class="glow"></div>
   <div class="in">
     <img class="logo" src="${dataUri(p.logo)}" alt="">
-    <div class="name">${esc(card.displayName)}</div>
+    <div class="name">${esc(zh.name)}</div>
     <div class="role">${esc(zh.role)}<span class="sep">·</span><span class="en">${esc(en.role)}</span></div>
 
     <div class="qrcard">${qrSvg(url, p.qrDark)}</div>

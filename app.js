@@ -2,7 +2,7 @@
  * app.js — 名片 landing page 邏輯
  * 資料與文案都在 data.js,這裡只處理行為。
  * ------------------------------------------------------------------ */
-import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js?v=5';
+import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js?v=6';
 
 /* ---------- 語系 ---------- */
 
@@ -108,7 +108,8 @@ function socialIcon(type) {
 }
 
 function cardAlt(card) {
-  return `${card.displayName} — ${pick(card, lang).company}`;
+  const L = pick(card, lang);
+  return `${L.name} — ${L.company}`;
 }
 
 function downloadName(card) {
@@ -199,7 +200,7 @@ function applyTheme(card) {
 function renderInfo(card) {
   const L = pick(card, lang);
 
-  nameEl.textContent = card.displayName;
+  nameEl.textContent = L.name;
   // 分隔點黏在職稱後面,換行時才不會出現孤立的「·」開頭
   roleEl.innerHTML =
     `<span>${L.role}<span class="sep" aria-hidden="true">·</span></span> ` +
@@ -210,16 +211,6 @@ function renderInfo(card) {
     { ico: 'i-phone', label: t.phoneLabel, text: card.phone, href: `tel:${card.phoneRaw}`, copy: card.phoneRaw },
     { ico: 'i-globe', label: t.webLabel, text: card.websiteLabel, href: card.website, copy: card.website, ext: true },
   ];
-  if (L.address) {
-    rows.push({
-      ico: 'i-pin', label: t.addressLabel, text: L.address, copy: L.address, wrap: true, ext: true,
-      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(L.address)}`,
-    });
-  }
-  if (card.vat) {
-    rows.push({ ico: 'i-id', label: t.vatLabel, text: `${t.vatLabel} ${card.vat}`, copy: card.vat });
-  }
-
   contactsEl.innerHTML = rows.map((r) => {
     const body = r.href
       ? `<a href="${r.href}" ${r.ext ? 'target="_blank" rel="noopener"' : ''}

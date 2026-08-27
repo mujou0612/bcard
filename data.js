@@ -32,6 +32,14 @@ const TAIPEI_ADR = {
   other: (lang) => ({ street: TAIPEI[lang], locality: '', postal: '', country: 'Taiwan' }),
 };
 
+const NAME = {
+  'zh-Hant': 'Mu Jou 周書丞',
+  'zh-Hans': 'Mu Jou 周書丞',
+  en: 'Mu Jou',            // 英文版不出現中文名
+  ja: 'Mu Jou 周書丞',
+  ko: 'Mu Jou 周書丞',
+};
+
 const ROLE_BD = {
   'zh-Hant': '商務副總',
   'zh-Hans': '商务副总',
@@ -46,6 +54,7 @@ function officeL10n(idPrefix, company) {
   for (const lang of LANGS) {
     out[lang] = {
       image: `assets/${idPrefix}-card-${lang.toLowerCase()}.png`,
+      name: NAME[lang],
       role: ROLE_BD[lang],
       company,
       address: TAIPEI[lang],
@@ -67,7 +76,6 @@ export const CARDS = [
     accent: '#5694B5',
     accentText: '#8FC6E4',
     brand: { logo: 'tools/logos/funtek.png', logoWidth: 262, dash: '#C6C6C6' },
-    displayName: 'Mu Jou 周書丞',
     email: 'mujou@funtek.co',
     phone: '+886 917 209 841',
     phoneRaw: '+886917209841',
@@ -78,7 +86,7 @@ export const CARDS = [
     social: [
       { type: 'linkedin', label: 'LinkedIn', url: 'https://linkedin.com/in/mujou0612' },
     ],
-    vcard: { first: 'Mu', last: 'Jou', fn: 'Mu Jou 周書丞', org: 'FUNTEK Software Inc.' },
+    vcard: { first: 'Mu', last: 'Jou', org: 'FUNTEK Software Inc.' },
     l10n: officeL10n('funtek', 'FUNTEK Software Inc.'),
   },
   {
@@ -86,7 +94,6 @@ export const CARDS = [
     accent: '#02B13F',
     accentText: '#35D46E',
     brand: { logo: 'tools/logos/pinchat.png', logoWidth: 250, dash: '#02B13F' },
-    displayName: 'Mu Jou 周書丞',
     email: 'mujou@pinchatcorp.com',
     phone: '+886 917 209 841',
     phoneRaw: '+886917209841',
@@ -97,7 +104,7 @@ export const CARDS = [
     social: [
       { type: 'linkedin', label: 'LinkedIn', url: 'https://linkedin.com/in/mujou0612' },
     ],
-    vcard: { first: 'Mu', last: 'Jou', fn: 'Mu Jou 周書丞', org: 'PinChat;FUNTEK Software Inc.' },
+    vcard: { first: 'Mu', last: 'Jou', org: 'PinChat;FUNTEK Software Inc.' },
     l10n: officeL10n('pinchat', 'PinChat by FUNTEK Software Inc.'),
   },
   {
@@ -105,7 +112,6 @@ export const CARDS = [
     accent: '#8FA3B8',
     accentText: '#CBD5E1',
     brand: null, // 使用原始名片圖,不重新產生
-    displayName: 'Mu Jou',
     email: 'mujou0612@gmail.com',
     phone: '+886 917 209 841',
     phoneRaw: '+886917209841',
@@ -116,11 +122,12 @@ export const CARDS = [
     social: [
       { type: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/mujou0612' },
     ],
-    vcard: { first: 'Mu', last: 'Jou', fn: 'Mu Jou', org: 'Futuremode;Onboard the World' },
+    vcard: { first: 'Mu', last: 'Jou', org: 'Futuremode;Onboard the World' },
     // 這張只有英文版(依需求保留原樣)
     l10n: {
       en: {
         image: 'assets/futuremode-card.jpg',
+        name: 'Mu Jou',
         role: 'Partnerships',
         company: 'Futuremode · Taipei Blockchain Week',
         address: null,
@@ -158,7 +165,6 @@ export const I18N = {
       emailLabel: '電子郵件',
       phoneLabel: '電話',
       webLabel: '網站',
-      addressLabel: '地址',
       vatLabel: '統一編號',
       zoomAria: '放大檢視名片',
       savingContact: '正在開啟聯絡人…',
@@ -188,7 +194,6 @@ export const I18N = {
       emailLabel: '电子邮件',
       phoneLabel: '电话',
       webLabel: '网站',
-      addressLabel: '地址',
       vatLabel: '统一编号',
       zoomAria: '放大查看名片',
       savingContact: '正在打开联系人…',
@@ -218,7 +223,6 @@ export const I18N = {
       emailLabel: 'Email',
       phoneLabel: 'Phone',
       webLabel: 'Website',
-      addressLabel: 'Address',
       vatLabel: 'VAT',
       zoomAria: 'Enlarge business card',
       savingContact: 'Opening contact card…',
@@ -248,7 +252,6 @@ export const I18N = {
       emailLabel: 'メール',
       phoneLabel: '電話',
       webLabel: 'ウェブサイト',
-      addressLabel: '住所',
       vatLabel: 'VAT',
       zoomAria: '名刺を拡大表示',
       savingContact: '連絡先を開いています…',
@@ -278,7 +281,6 @@ export const I18N = {
       emailLabel: '이메일',
       phoneLabel: '전화',
       webLabel: '웹사이트',
-      addressLabel: '주소',
       vatLabel: 'VAT',
       zoomAria: '명함 확대 보기',
       savingContact: '연락처를 여는 중…',
@@ -309,7 +311,7 @@ export function buildVCard(card, lang = FALLBACK_LANG) {
     'BEGIN:VCARD',
     'VERSION:3.0',
     `N:${esc(v.last)};${esc(v.first)};;;`,
-    `FN:${esc(v.fn)}`,
+    `FN:${esc(L.name)}`,
     // ORG 內的分號是「部門」分隔,屬於結構,不跳脫
     `ORG:${v.org.split(';').map(esc).join(';')}`,
     `TITLE:${esc(L.role)}`,

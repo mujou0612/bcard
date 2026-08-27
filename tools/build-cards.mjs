@@ -46,7 +46,7 @@ function template(card, lang) {
   .org     { position:absolute; left:75px; top:520px; font-size:33px; color:#808080; line-height:1.53; }
 </style></head><body>
   <div class="dash"></div>
-  <div class="name">${escHtml(card.displayName)}</div>
+  <div class="name">${escHtml(L.name)}</div>
   <div class="title">${escHtml(L.role)}</div>
   <img class="logo" src="${dataUri(b.logo)}" alt="">
   <div class="contact">${escHtml(card.email)}<br>${escHtml(card.website)}</div>
