@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mu Jou · Digital Business Card</title>
+<meta name="description" content="Save Mu Jou's contact details, download the card, or start a chat right away.">
+<meta name="theme-color" content="#0A1420">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Mu Jou · Digital Business Card">
+<meta property="og:description" content="Save Mu Jou's contact details, download the card, or start a chat right away.">
+<meta property="og:image" content="https://mujou0612.github.io/bcard/assets/funtek-card.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M3.5 7l7.6 5.4a1.6 1.6 0 0 0 1.8 0L20.5 7"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7.6 3.5H5.3A1.8 1.8 0 0 0 3.5 5.4c0 8.4 6.7 15.1 15.1 15.1a1.8 1.8 0 0 0 1.9-1.8v-2.3l-4.3-1.6-1.9 2.2a13.6 13.6 0 0 1-5.4-5.4l2.2-1.9z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.7"/><path d="M3.4 12h17.2M12 3.3c2.4 2.5 3.6 5.5 3.6 8.7S14.4 18.2 12 20.7C9.6 18.2 8.4 15.2 8.4 12S9.6 5.8 12 3.3z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/><path d="M15.5 5.6a2.1 2.1 0 0 0-2.1-2.1H5.6a2.1 2.1 0 0 0-2.1 2.1v7.8a2.1 2.1 0 0 0 2.1 2.1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.6l5 5 10-11"/></symbol>
+  <symbol id="i-contact" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.6"/><path d="M3.6 20.2a6.6 6.6 0 0 1 12.8 0M18.5 6.4v6.2M21.6 9.5h-6.2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.6v11.2M7.4 10.4L12 15l4.6-4.6M4 17.4v1.6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 12.2c0 4.2-3.8 7.6-8.5 7.6a9.7 9.7 0 0 1-2.7-.4L4.2 21l1.3-3.6a7.2 7.2 0 0 1-2-4.9c0-4.2 3.8-7.6 8.5-7.6s8.5 3.4 8.5 7.3z"/><circle cx="8.6" cy="12.2" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12.2" r="1" fill="currentColor" stroke="none"/><circle cx="15.4" cy="12.2" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-social" viewBox="0 0 24 24"><circle cx="18" cy="5.6" r="2.7"/><circle cx="6" cy="12" r="2.7"/><circle cx="18" cy="18.4" r="2.7"/><path d="M8.4 10.7l7.2-3.8M8.4 13.3l7.2 3.8"/></symbol>
+  <symbol id="i-lang" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.7"/><path d="M3.4 12h17.2M12 3.3c2.4 2.5 3.6 5.5 3.6 8.7S14.4 18.2 12 20.7C9.6 18.2 8.4 15.2 8.4 12S9.6 5.8 12 3.3z"/></symbol>
+  <symbol id="i-chevron-l" viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5"/></symbol>
+  <symbol id="i-chevron-r" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-arrow-out" viewBox="0 0 24 24"><path d="M8 16L16.5 7.5M9.5 7.5h7v7"/></symbol>
+  <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3.2 21h3.6V10H3.2zM9.4 10h3.44v1.5h.05c.48-.9 1.66-1.85 3.42-1.85 3.66 0 4.34 2.4 4.34 5.53V21h-3.6v-4.94c0-1.18-.02-2.7-1.65-2.7-1.65 0-1.9 1.29-1.9 2.62V21H9.4z"/></symbol>
+  <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3.3" y="3.3" width="17.4" height="17.4" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.1" cy="6.9" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10.2 13.8a3.7 3.7 0 0 0 5.3 0l2.9-2.9a3.75 3.75 0 0 0-5.3-5.3l-1.2 1.2M13.8 10.2a3.7 3.7 0 0 0-5.3 0l-2.9 2.9a3.75 3.75 0 0 0 5.3 5.3l1.2-1.2"/></symbol>
+</svg>
+
+<div class="glow" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="ident">
+      <span class="avatar" aria-hidden="true">MJ</span>
+      <span class="ident-txt">
+        <strong id="topName">Mu Jou</strong>
+        <small data-i18n="kicker">Digital Business Card</small>
+      </span>
+    </div>
+    <button class="lang-btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
+      <svg class="ico" aria-hidden="true"><use href="#i-lang"></use></svg>
+      <span id="langBtnLabel">EN</span>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="stage" aria-roledescription="carousel">
+    <p class="hint" data-i18n="hint">Swipe to switch cards</p>
+
+    <div class="rail">
+      <div class="cards" id="cards" tabindex="0" role="group" aria-label="Business cards"></div>
+    </div>
+
+    <div class="controls">
+      <button class="nav-arrow" id="prevBtn" type="button" data-i18n-aria="prev" aria-label="Previous card">
+        <svg class="ico" aria-hidden="true"><use href="#i-chevron-l"></use></svg>
+      </button>
+      <div class="dots" id="dots" role="tablist" aria-label="Select card"></div>
+      <button class="nav-arrow" id="nextBtn" type="button" data-i18n-aria="next" aria-label="Next card">
+        <svg class="ico" aria-hidden="true"><use href="#i-chevron-r"></use></svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="detail">
+    <div class="info" id="info">
+      <h1 class="name" id="cName">Mu Jou</h1>
+      <p class="role" id="cRole"></p>
+      <ul class="contacts" id="contacts"></ul>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" id="btnContact" href="#" data-i18n="addContact">
+        <svg class="ico" aria-hidden="true"><use href="#i-contact"></use></svg>
+        <span>Add to Contact</span>
+      </a>
+      <div class="btn-row">
+        <button class="btn" id="btnDownload" type="button">
+          <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+          <span data-i18n="download">Download</span>
+        </button>
+        <a class="btn" id="btnChat" href="#" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-chat"></use></svg>
+          <span data-i18n="chat">Chat</span>
+        </a>
+        <button class="btn" id="btnSocial" type="button">
+          <svg class="ico" aria-hidden="true"><use href="#i-social"></use></svg>
+          <span data-i18n="social">Social</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="foot" id="foot"></p>
+  </section>
+
+</main>
+
+<div class="sheet-scrim" id="scrim" hidden></div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet-grip" aria-hidden="true"></div>
+  <div class="sheet-head">
+    <h2 id="sheetTitle">Social</h2>
+    <button class="icon-btn" id="sheetClose" type="button" data-i18n-aria="close" aria-label="Close">
+      <svg class="ico" aria-hidden="true"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

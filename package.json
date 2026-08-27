@@ -1,0 +1,9 @@
+{
+  "name": "bcard",
+  "private": true,
+  "type": "module",
+  "description": "Mu Jou · digital business card landing page (static, GitHub Pages)",
+  "scripts": {
+    "build:vcf": "node tools/build-vcf.mjs"
+  }
+}
