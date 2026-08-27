@@ -30,6 +30,7 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
+  min-height: 100vh;      /* iOS < 15.4 fallback */
   min-height: 100dvh;
   color: var(--text);
   background: #09131f linear-gradient(180deg, #133045 0%, #0d1d2e 44%, #09131f 100%) no-repeat fixed;
@@ -370,6 +371,7 @@ body {
     grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr);
     gap: 56px; align-items: center;
     padding: 46px 32px 60px;
+    min-height: calc(100vh - 58px);
     min-height: calc(100dvh - 58px);
   }
   .hint { text-align: center; }
