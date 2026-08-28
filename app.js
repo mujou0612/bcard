@@ -2,12 +2,12 @@
  * app.js — 名片 landing page 邏輯
  * 資料與文案都在 data.js,這裡只處理行為。
  * ------------------------------------------------------------------ */
-import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js?v=8';
+import { CARDS, I18N, LANGS, FALLBACK_LANG, pick, vcfPath, buildVCard } from './data.js?v=9';
 
 /* ---------- 語系 ---------- */
 
 /** 靜態資源版本:改圖之後加這個數字,瀏覽器才不會拿舊的快取 */
-const ASSET_V = '8';
+const ASSET_V = '9';
 const withV = (p) => `${p}?v=${ASSET_V}`;
 
 const LANG_SHORT = { 'zh-Hant': '繁中', 'zh-Hans': '简中', en: 'EN', ja: '日本語', ko: '한국어' };
@@ -47,6 +47,20 @@ let t = I18N[lang].t;
 const UA = navigator.userAgent || '';
 const IS_IOS = /iP(hone|ad|od)/.test(UA) ||
   (/Mac/.test(UA) && typeof navigator.maxTouchPoints === 'number' && navigator.maxTouchPoints > 1);
+const IS_ANDROID = /Android/.test(UA);
+const IS_MOBILE = IS_IOS || IS_ANDROID;
+
+/** 手機能不能把圖片交給系統分享面板
+ *  → iOS 選「儲存影像」、Android 選「儲存到相簿」,才會真的進相簿而不是變成檔案 */
+const CAN_SHARE_FILES = (() => {
+  if (!IS_MOBILE) return false;
+  if (typeof navigator.share !== 'function' || typeof navigator.canShare !== 'function') return false;
+  try {
+    const probe = new File([new Uint8Array(1)], 'probe.png', { type: 'image/png' });
+    return navigator.canShare({ files: [probe] });
+  } catch (_) { return false; }
+})();
+
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const CAN_HOVER = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
@@ -61,6 +75,8 @@ const roleEl = $('cRole');
 const contactsEl = $('contacts');
 const btnContact = $('btnContact');
 const btnDownload = $('btnDownload');
+const btnDownloadLabel = $('btnDownloadLabel');
+const btnDownloadIcon = $('btnDownloadIcon');
 const btnChat = $('btnChat');
 const btnSocial = $('btnSocial');
 const prevBtn = $('prevBtn');
@@ -116,10 +132,10 @@ function cardAlt(card) {
   return `${L.name} — ${L.company}`;
 }
 
-function downloadName(card) {
-  const ext = pick(card, lang).image.split('.').pop();
+function downloadName(card, l = lang) {
+  const ext = pick(card, l).image.split('.').pop();
   const id = card.id.charAt(0).toUpperCase() + card.id.slice(1);
-  return `MuJou-${id}-${lang}.${ext}`;
+  return `MuJou-${id}-${l}.${ext}`;
 }
 
 /** 用一個暫時的 <a> 觸發導覽/下載,避免被彈窗阻擋 */
@@ -244,6 +260,8 @@ function renderInfo(card) {
   slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
   prevBtn.disabled = index === 0;
   nextBtn.disabled = index === CARDS.length - 1;
+
+  prefetchCardFile();
 }
 
 let swapTimer;
@@ -324,20 +342,86 @@ function addToContact(e) {
   }
 }
 
-async function downloadCard() {
-  const card = CARDS[index];
-  const src = withV(pick(card, lang).image);
-  toast(t.downloadStarted);
+/* ---------- 存到相簿 ---------- */
+
+/* iOS Safari 只允許在使用者手勢的「同一個 tick」裡呼叫 navigator.share(),
+   中間只要 await 過 fetch 就會失去授權、分享面板叫不出來,
+   所以目前這張名片要先抓好放著,按下去才能立刻開面板。
+   快取的是 Blob 不是 File:FutureMode 五個語系共用同一張圖,
+   檔名卻要跟著語系走,所以檔名等到要用的時候才包上去。 */
+const blobCache = new Map(); // src -> Blob
+
+// MIME 跟著檔案走,FutureMode 那張是 jpg
+const toFile = (blob, card, l) =>
+  new File([blob], downloadName(card, l), { type: blob.type || 'image/png' });
+
+/** 已經抓好就同步包成 File,還沒抓好回傳 null(不能 await,會弄丟手勢授權) */
+function cachedCardFile(card, l = lang) {
+  const blob = blobCache.get(withV(pick(card, l).image));
+  return blob ? toFile(blob, card, l) : null;
+}
+
+async function loadCardFile(card, l = lang) {
+  const src = withV(pick(card, l).image);
+  const hit = blobCache.get(src);
+  if (hit) return toFile(hit, card, l);
   try {
     const res = await fetch(src, { cache: 'force-cache' });
     if (!res.ok) throw new Error(res.status);
     const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    clickAnchor({ href: url, download: downloadName(card) });
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    blobCache.set(src, blob);
+    return toFile(blob, card, l);
   } catch (_) {
-    clickAnchor({ href: src, download: downloadName(card), target: '_blank', rel: 'noopener' });
+    return null;
   }
+}
+
+/** 只預抓「目前這張 + 目前語系」,圖本來就在 HTTP 快取裡,幾乎沒有成本 */
+function prefetchCardFile() {
+  if (CAN_SHARE_FILES) loadCardFile(CARDS[index], lang);
+}
+
+/** 主按鈕:手機交給系統分享面板存進相簿,桌機維持原本的下載 */
+function saveCard() {
+  const card = CARDS[index];
+  const src = withV(pick(card, lang).image);
+
+  if (!CAN_SHARE_FILES) { downloadCard(card, src); return; }
+
+  const cached = cachedCardFile(card);
+  if (cached) { shareCardFile(cached); return; }
+
+  // 還沒預抓完就被按(剛進頁面):補抓一次再試,Android 對手勢的認定比較寬鬆
+  loadCardFile(card, lang).then((file) => {
+    if (file) shareCardFile(file); else fallbackSave(card, src);
+  });
+}
+
+function shareCardFile(file) {
+  navigator.share({ files: [file] }).catch((err) => {
+    if (err && err.name === 'AbortError') return; // 使用者自己關掉面板,不是失敗
+    const card = CARDS[index];
+    fallbackSave(card, withV(pick(card, lang).image));
+  });
+}
+
+/** 沒有系統分享面板時的退路 */
+function fallbackSave(card, src) {
+  // iOS 沒有分享面板就只剩長按存圖,直接放大並提示怎麼加入照片
+  if (IS_IOS) { openLightbox(); toast(t.longPressHint); return; }
+  downloadCard(card, src);
+}
+
+async function downloadCard(card = CARDS[index], src = withV(pick(CARDS[index], lang).image)) {
+  toast(t.downloadStarted);
+  const file = await loadCardFile(card, lang);
+  if (file) {
+    const url = URL.createObjectURL(file);
+    clickAnchor({ href: url, download: file.name });
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    return;
+  }
+  clickAnchor({ href: src, download: downloadName(card), target: '_blank', rel: 'noopener' });
 }
 
 function openSocial() {
@@ -539,6 +623,11 @@ function initTaps() {
 function init() {
   buildSlides();
   index = initialIndex();
+  // 手機叫得出系統分享面板 → 這顆是「存到相簿」,桌機才是「下載名片」
+  if (CAN_SHARE_FILES) {
+    btnDownloadLabel.dataset.i18n = 'saveToPhotos';
+    btnDownloadIcon.setAttribute('href', '#i-photo');
+  }
   applyLang();          // 內含 syncCardImages + renderInfo
   setIndex(index, { animate: false });
   initTilt();
@@ -570,7 +659,7 @@ function init() {
   nextBtn.addEventListener('click', () => goTo(index + 1));
 
   btnContact.addEventListener('click', addToContact);
-  btnDownload.addEventListener('click', downloadCard);
+  btnDownload.addEventListener('click', saveCard);
   btnSocial.addEventListener('click', openSocial);
   langBtn.addEventListener('click', openLangSheet);
   sheetClose.addEventListener('click', closeSheet);

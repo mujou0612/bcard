@@ -12,7 +12,9 @@
 - **動態名片效果** — 光澤掃過、緩慢浮動,桌機滑鼠移入時 3D 傾斜
 - **i18n** — 依瀏覽器語系自動切換,右上角可手動切換(記憶於 localStorage)
 - **Add to Contact** — iOS 直接開啟該語系的 `.vcf` 跳出「加入聯絡人」;Android / 桌機以 Blob 下載 vCard 3.0(CRLF、UTF-8)
-- **Download** — 下載目前這張名片的高解析圖片(2376×1452)
+- **存到相簿 / Download** — 目前這張名片的高解析圖片(2376×1452)。手機(iOS / Android)透過 Web Share API 交給
+  系統分享面板,選「儲存影像 / 儲存到相簿」直接存進相簿;桌機維持一般下載。iOS 若不支援分享面板,
+  會自動放大名片並提示長按「加入照片」
 - **Chat** — 開啟 https://pinchat.app/mujou
 - **Social** — 單一連結直接開啟,多筆連結則跳出選單
 - **RWD** — 手機優先,≥980px 切換為左右兩欄桌機版型
@@ -22,7 +24,7 @@
 ```
 index.html          頁面結構 + SVG icon sprite
 styles.css          全部樣式(手機優先,斷點 560 / 980 / 1240px)
-app.js              行為邏輯(輪播、i18n、放大檢視、vCard、下載、bottom sheet)
+app.js              行為邏輯(輪播、i18n、放大檢視、vCard、存到相簿、bottom sheet)
 data.js             ★ 唯一設定來源:名片資料 + 五國語系文案 + vCard 產生器
 assets/             名片圖(每語系一張)與 icon
 vcf/                產生出來的 vCard 檔(每張名片 × 每語系)

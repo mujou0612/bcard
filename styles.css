@@ -388,7 +388,8 @@ body.no-scroll { overflow: hidden; }
 
 /* --- toast ---------------------------------------------------------- */
 .toast {
-  position: fixed; z-index: 60; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom));
+  /* 要壓在放大檢視(z-index 70)之上,長按存圖的提示才看得到 */
+  position: fixed; z-index: 80; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom));
   transform: translate(-50%, 14px);
   max-width: min(90vw, 420px);
   padding: 11px 18px; border-radius: 999px;
