@@ -79,6 +79,8 @@ const btnDownloadLabel = $('btnDownloadLabel');
 const btnDownloadIcon = $('btnDownloadIcon');
 const btnChat = $('btnChat');
 const btnSocial = $('btnSocial');
+const btnSocialLabel = $('btnSocialLabel');
+const btnSocialIcon = $('btnSocialIcon');
 const prevBtn = $('prevBtn');
 const nextBtn = $('nextBtn');
 const glowEl = document.querySelector('.glow');
@@ -250,7 +252,13 @@ function renderInfo(card) {
   // 動作按鈕
   btnContact.setAttribute('href', vcfPath(card, lang));
   btnChat.setAttribute('href', card.chatUrl);
-  btnSocial.hidden = !(card.social && card.social.length);
+
+  // 只有一個社群連結時,按鈕直接顯示該平台(LinkedIn / Instagram);多筆才維持通用的 Social
+  const socials = card.social || [];
+  const only = socials.length === 1 ? socials[0] : null;
+  btnSocial.hidden = !socials.length;
+  btnSocialLabel.textContent = only ? only.label : t.social;
+  btnSocialIcon.setAttribute('href', `#${only ? socialIcon(only.type) : 'i-social'}`);
 
   dotsEl.querySelectorAll('.dot').forEach((d, i) => {
     const on = i === index;

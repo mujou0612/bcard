@@ -90,22 +90,22 @@
     </div>
 
     <div class="actions">
-      <a class="btn btn-primary" id="btnContact" href="#" data-i18n="addContact">
-        <svg class="ico" aria-hidden="true"><use href="#i-contact"></use></svg>
-        <span>Add to Contact</span>
-      </a>
+      <button class="btn btn-primary" id="btnDownload" type="button">
+        <svg class="ico" aria-hidden="true"><use id="btnDownloadIcon" href="#i-download"></use></svg>
+        <span id="btnDownloadLabel" data-i18n="download">Download</span>
+      </button>
       <div class="btn-row">
-        <button class="btn" id="btnDownload" type="button">
-          <svg class="ico" aria-hidden="true"><use id="btnDownloadIcon" href="#i-download"></use></svg>
-          <span id="btnDownloadLabel" data-i18n="download">Download</span>
-        </button>
+        <a class="btn" id="btnContact" href="#">
+          <svg class="ico" aria-hidden="true"><use href="#i-contact"></use></svg>
+          <span data-i18n="addContact">Contact</span>
+        </a>
         <a class="btn" id="btnChat" href="#" target="_blank" rel="noopener">
           <svg class="ico" aria-hidden="true"><use href="#i-chat"></use></svg>
           <span data-i18n="chat">Chat</span>
         </a>
         <button class="btn" id="btnSocial" type="button">
-          <svg class="ico" aria-hidden="true"><use href="#i-social"></use></svg>
-          <span data-i18n="social">Social</span>
+          <svg class="ico" aria-hidden="true"><use id="btnSocialIcon" href="#i-social"></use></svg>
+          <span id="btnSocialLabel">Social</span>
         </button>
       </div>
     </div>

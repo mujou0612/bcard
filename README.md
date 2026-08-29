@@ -11,12 +11,12 @@
 - **點名片放大檢視** — 維持名片原本方向放大到滿版,可再用手勢縮放細看
 - **動態名片效果** — 光澤掃過、緩慢浮動,桌機滑鼠移入時 3D 傾斜
 - **i18n** — 依瀏覽器語系自動切換,右上角可手動切換(記憶於 localStorage)
-- **Add to Contact** — iOS 直接開啟該語系的 `.vcf` 跳出「加入聯絡人」;Android / 桌機以 Blob 下載 vCard 3.0(CRLF、UTF-8)
-- **存到相簿 / Download** — 目前這張名片的高解析圖片(2376×1452)。手機(iOS / Android)透過 Web Share API 交給
+- **存到相簿 / Download**(主要按鈕) — 目前這張名片的高解析圖片(2376×1452)。手機(iOS / Android)透過 Web Share API 交給
   系統分享面板,選「儲存影像 / 儲存到相簿」直接存進相簿;桌機維持一般下載。iOS 若不支援分享面板,
   會自動放大名片並提示長按「加入照片」
+- **Contact** — iOS 直接開啟該語系的 `.vcf` 跳出「加入聯絡人」;Android / 桌機以 Blob 下載 vCard 3.0(CRLF、UTF-8)
 - **Chat** — 開啟 https://pinchat.app/mujou
-- **Social** — 單一連結直接開啟,多筆連結則跳出選單
+- **社群按鈕** — 只有一筆連結時,按鈕直接顯示該平台名稱與圖示(FUNTEK / PinChat 為 LinkedIn,Futuremode 為 Instagram)並一鍵開啟;多筆時顯示 Social 並跳出選單
 - **RWD** — 手機優先,≥980px 切換為左右兩欄桌機版型
 
 ## 檔案結構
@@ -53,7 +53,7 @@ node tools/build-vcf.mjs     # 重產 vCard
 - 統一編號:各張名片的 `vat` 欄位。標籤中文是「統一編號」,其他語系是 `VAT`(見 `I18N[*].t.vatLabel`)
 
 ### 加社群連結
-在該張名片的 `social` 陣列加一筆即可。空陣列 = 隱藏 Social 按鈕;1 筆 = 點擊直接開啟;2 筆以上 = 跳出選單。
+在該張名片的 `social` 陣列加一筆即可。空陣列 = 隱藏社群按鈕;1 筆 = 按鈕顯示該平台名稱(`label`)與圖示、點擊直接開啟;2 筆以上 = 顯示 Social 並跳出選單。
 
 ```js
 social: [
